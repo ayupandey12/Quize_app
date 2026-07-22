@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "question": "Which React Hook is used to manage local component state?",
+    "options": [
+      "useEffect",
+      "useMemo",
+      "useState",
+      "useRef"
+    ],
+    "correctAnswer": "useState"
+  },
+  {
+    "id": 2,
+    "question": "What is the purpose of the key prop when rendering lists in React?",
+    "options": [
+      "To style list items",
+      "To help React identify changed items",
+      "To make the list responsive",
+      "To sort the list"
+    ],
+    "correctAnswer": "To help React identify changed items"
+  },
+  {
+    "id": 3,
+    "question": "Which Hook is commonly used for side effects such as API calls?",
+    "options": [
+      "useEffect",
+      "useState",
+      "useContext",
+      "useCallback"
+    ],
+    "correctAnswer": "useEffect"
+  },
+  {
+    "id": 4,
+    "question": "What does the spread operator do in this expression: [...items, newItem]?",
+    "options": [
+      "Deletes the old array",
+      "Mutates the original array",
+      "Creates a new array containing existing items and newItem",
+      "Sorts the array"
+    ],
+    "correctAnswer": "Creates a new array containing existing items and newItem"
+  },
+  {
+    "id": 5,
+    "question": "Which method converts a JSON string into a JavaScript value?",
+    "options": [
+      "JSON.stringify",
+      "JSON.parse",
+      "JSON.convert",
+      "JSON.decode"
+    ],
+    "correctAnswer": "JSON.parse"
+  },
+  {
+    "id": 6,
+    "question": "What is the output of typeof null in JavaScript?",
+    "options": [
+      "null",
+      "undefined",
+      "object",
+      "boolean"
+    ],
+    "correctAnswer": "object"
+  },
+  {
+    "id": 7,
+    "question": "Which array method creates a new array by transforming every element?",
+    "options": [
+      "filter",
+      "find",
+      "map",
+      "reduceRight"
+    ],
+    "correctAnswer": "map"
+  },
+  {
+    "id": 8,
+    "question": "What should be done with a timer created inside useEffect?",
+    "options": [
+      "Store it in localStorage",
+      "Clear it in the cleanup function",
+      "Create it on every render without cleanup",
+      "Convert it into state"
+    ],
+    "correctAnswer": "Clear it in the cleanup function"
+  },
+  {
+    "id": 9,
+    "question": "Which JavaScript method waits for multiple independent promises?",
+    "options": [
+      "Promise.resolve",
+      "Promise.all",
+      "Promise.then",
+      "Promise.raceOnly"
+    ],
+    "correctAnswer": "Promise.all"
+  },
+  {
+    "id": 10,
+    "question": "What happens when setState is called in React?",
+    "options": [
+      "The browser reloads",
+      "The component may re-render",
+      "The state changes synchronously in every case",
+      "The component is deleted"
+    ],
+    "correctAnswer": "The component may re-render"
+  }
+]
