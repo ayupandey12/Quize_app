@@ -9,22 +9,28 @@ export const  App=()=>{
   const [currquestion,setcurrquestion]=useState(questions.filter((q)=>{return q.id===questionid}))
   const [curroption,setcurroption]=useState(options.filter((q)=>{return q.id===questionid}))
   const [curranswer,setcurranswer]=useState(answers.filter((q)=>{return q.id===questionid}))
+  const [chooseanswer,setchooseanswer]=useState(null)
   
  useEffect(()=>{
      setcurrquestion(questions.filter((q)=>{return q.id===questionid}))
      setcurroption(options.filter((q)=>{return q.id===questionid}))
      setcurranswer(answers.filter((q)=>{return q.id===questionid}))
+     setchooseanswer(null)
      if(questionid==questions.length) return
      setTimeout(() => {
       setquestionid(questionid+1);
-     }, 2000);
+     }, 10000);
   
  },[questionid])
- 
+ useEffect(()=>{
+   console.log(chooseanswer)
+ },[chooseanswer])
   
   return <div>
     <div>{currquestion[0].question}</div>
-    <div>{curroption[0].options}</div>
-    <div>{curranswer[0].answer}</div>
+    <select defaultValue={"select the option below"} value={chooseanswer} name="quesop" id="quesop" onChange={(e)=>{setchooseanswer(e.target.value)}}>
+      <option disabled id="quesop" >{"select the option below"}</option>
+      {curroption[0].options.map((val)=>{return <option id="quesop">{val}</option>})}
+    </select>
   </div>
 }
