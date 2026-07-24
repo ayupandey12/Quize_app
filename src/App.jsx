@@ -1,52 +1,124 @@
-import { useState } from "react"
-import a from "./assets/question.json"
-import { useEffect } from "react"
-import { Select } from "./components/Select"
-const questions=a.map((q)=>{return {id:q.id,question:q.question}})
-const options=a.map((q)=>{return {id:q.id,options:q.options}})
-const answers=a.map((q)=>{return {id:q.id,answer:q.correctAnswer}})
-const size=questions.length;
-const ansrec=[]
-let iscalculated=false;
-ansrec.length=size+1
-export const  App=()=>{
-  const [questionid,setquestionid]=useState(1);
-  const [currquestion,setcurrquestion]=useState(questions.filter((q)=>{return q.id===questionid}))
-  const [curroption,setcurroption]=useState(options.filter((q)=>{return q.id===questionid}))
-  const [curranswer,setcurranswer]=useState(answers.filter((q)=>{return q.id===questionid}))
-  const [chooseanswer,setchooseanswer]=useState(null)
-  const [settimer,settimert]=useState(null)
-  const [score,setscore]=useState(0)
- useEffect(()=>{
-     if(questionid>questions.length) return
-     setcurrquestion(questions.filter((q)=>{return q.id===questionid}))
-     setcurroption(options.filter((q)=>{return q.id===questionid}))
-     setcurranswer(answers.filter((q)=>{return q.id===questionid}))
-     ansrec[questionid]=chooseanswer;
-     setchooseanswer(null)
-     if(questionid==questions.length) return
-    const t=setTimeout(() => {
-      setquestionid(questionid+1);
-     }, 10000);
-     settimert(t);
-     
- },[questionid])
- useEffect(()=>{
-   console.log(chooseanswer)
- },[chooseanswer,iscalculated])
-  return (<div>
-    <div>{currquestion[0].question}</div>
-     <Select chooseanswer={chooseanswer} setchooseanswer={setchooseanswer} curroption={curroption}/>
-     <button onClick={()=>{setquestionid(questionid+1) 
-            clearTimeout(settimer)
-     }}>next</button>
-     {questionid>questions.length&&<button onClick={()=>{
-      for(let i=1;i<=size;i++)
-      {
-        if(ansrec[i]===answers[i-1].answer) setscore(score+1)
-      }
-      iscalculated=true
-     }}>submit</button>}
-     {iscalculated&&<div>your score is {score}</div>}
-  </div>)
-}
+import { useEffect, useState } from "react";
+import questions from "./assets/question.json";
+import { Select } from "./components/Select";
+
+const QUESTION_TIME = 15_000;
+
+export const App = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answerRecords, setAnswerRecords] = useState([]);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+
+  const currentQuestion = questions[currentIndex];
+
+  const saveAnswerAndMoveNext = (timedOut = false) => {
+    if (!currentQuestion) return;
+
+    const record = {
+      questionId: currentQuestion.id,
+      question: currentQuestion.question,
+      selectedAnswer: timedOut ? null : selectedAnswer,
+      correctAnswer: currentQuestion.correctAnswer,
+      isCorrect:
+        !timedOut && selectedAnswer === currentQuestion.correctAnswer,
+      timedOut,
+    };
+
+    setAnswerRecords((previousRecords) => [
+      ...previousRecords,
+      record,
+    ]);
+
+    setSelectedAnswer(null);
+
+    const isLastQuestion = currentIndex === questions.length - 1;
+
+    if (isLastQuestion) {
+      setQuizCompleted(true);
+      return;
+    }
+
+    setCurrentIndex((previousIndex) => previousIndex + 1);
+  };
+
+  useEffect(() => {
+    if (quizCompleted) return;
+
+    const timer = setTimeout(() => {
+      saveAnswerAndMoveNext(true);
+    }, QUESTION_TIME);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentIndex, quizCompleted]);
+
+  const score = answerRecords.reduce((total, answer) => {
+    return answer.isCorrect ? total + 1 : total;
+  }, 0);
+
+  if (quizCompleted) {
+    return (
+      <main>
+        <h1>Quiz completed</h1>
+
+        <h2>
+          Your score: {score}/{questions.length}
+        </h2>
+
+        {answerRecords.map((record, index) => (
+          <section key={record.questionId}>
+            <h3>
+              {index + 1}. {record.question}
+            </h3>
+
+            <p>
+              Your answer:{" "}
+              {record.selectedAnswer ?? "Not answered"}
+            </p>
+
+            <p>
+              Correct answer: {record.correctAnswer}
+            </p>
+
+            <p>
+              Status:{" "}
+              {record.timedOut
+                ? "Timed out"
+                : record.isCorrect
+                  ? "Correct"
+                  : "Incorrect"}
+            </p>
+          </section>
+        ))}
+      </main>
+    );
+  }
+
+  return (
+    <main>
+      <p>
+        Question {currentIndex + 1} of {questions.length}
+      </p>
+
+      <h2>{currentQuestion.question}</h2>
+
+      <Select
+        chooseanswer={selectedAnswer}
+        setchooseanswer={setSelectedAnswer}
+        curroption={currentQuestion.options}
+      />
+
+      <button
+        type="button"
+        disabled={selectedAnswer === null}
+        onClick={() => saveAnswerAndMoveNext(false)}
+      >
+        {currentIndex === questions.length - 1
+          ? "Finish"
+          : "Next"}
+      </button>
+    </main>
+  );
+};
